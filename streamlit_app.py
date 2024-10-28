@@ -42,12 +42,12 @@ gdf = gdf.to_crs(epsg=4326)
 
 # Definovanie farebnej mapy pre jednotlivé formy vlastníctva
 ownership_colors = {
-    "štátne": "#3186cc",
-    "miest, obcí, samosprávneho kraja": "#32a852",
-    "súkromné": "#e377c2",
-    "spoločenstvenné": "#ff7f0e",
-    "cirkevné": "#ff7f0e",
-    "nezistené": "#d62728"
+    "štátne": "#FF0000	",
+    "miest, obcí, samosprávneho kraja": "#008000",
+    "súkromné": "#0000FF",
+    "spoločenstvenné": "#008080",
+    "cirkevné": "#808000",
+    "nezistené": "#800000"
 }
 
 # Deklarácia štýlovej funkcie s farbami podľa formy vlastníctva
