@@ -26,14 +26,14 @@ def get_db_connection():
 con = get_db_connection()
 
 #SQL dopyt pomocou premennej sql
-sql = "SELECT * FROM chko_sv_vlastnictvo_v LIMIT 5;"
-sql_m = "SELECT * FROM mapa_vlastnictvo_v;"
+#sql = "SELECT * FROM chko_sv_vlastnictvo_v LIMIT 5;"
+sql_m = "SELECT * FROM mapa_vlastnictvo;"
 
 #Pužitie geopandas na volanie relačnej tabuľky z PostgreSQL+Postgis databázy
 gdf = gpd.read_postgis(sql_m, con, geom_col='geom', crs = 5514)
 
-tab = pd.read_sql_query(sql, con)
-st.dataframe(tab)
+#tab = pd.read_sql_query(sql, con)
+#st.dataframe(tab)
 
 #Zobrazenie interaktívnej tabuľky
 #st.dataframe(gdf)
@@ -57,7 +57,7 @@ def style_function(feature):
     color = ownership_colors.get(ownership_type, "#d62728")  # Default farba pre 'nezistene'
     return {
         'fillColor': color,
-        'color': 'black',
+       # 'color': 'black',
         'weight': 2,
         'fillOpacity': 0.6,
     }
