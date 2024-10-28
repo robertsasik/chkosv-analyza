@@ -1,5 +1,9 @@
 streamlit
 pandas
+sqlalchemy
+geopandas
 plotly.express
 folium
 streamlit_folium
+matplotlib
+psycopg2-binary
