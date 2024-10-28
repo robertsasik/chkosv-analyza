@@ -62,7 +62,7 @@ def style_function(feature):
     }
 
 #Vytvorenie interaktívnej mapy pomocou knižnice folium do objektu m
-m = folium.Map(location=[49.128173785261644, 18.42754307767109], zoom_start=12) 
+m = folium.Map(location=[49.128173785261644, 18.42754307767109], zoom_start=12, tiles="CartoDB positron") 
 
 # Pridanie GeoDataFrame vrstvy na mapu so zvoleným štýlom
 folium.GeoJson(gdf, style_function=style_function).add_to(m)
