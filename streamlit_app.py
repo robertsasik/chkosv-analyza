@@ -41,17 +41,29 @@ st.dataframe(tab)
 #Konverzia súradnicového systému S-JTSK na WGS-84 pomocou geopandas
 gdf = gdf.to_crs(epsg=4326)
 
-#Vytvorenie interaktívnej mapy pomocou knižnice folium do objektu m
-m = folium.Map(location=[49.128173785261644, 18.42754307767109], zoom_start=10) 
+# Definovanie farebnej mapy pre jednotlivé formy vlastníctva
+ownership_colors = {
+    "štátne": "#3186cc",
+    "miest, obcí, samosprávneho kraja": "#32a852",
+    "súkromné": "#e377c2",
+    "spoločenstvenné": "#ff7f0e",
+    "cirkevné": "#ff7f0e",
+    "nezistené": "#d62728"
+}
 
-#Definícia štýlu vykreslenia polygónovej vrstvy
+# Deklarácia štýlovej funkcie s farbami podľa formy vlastníctva
 def style_function(feature):
+    ownership_type = feature['properties'].get('Forma vlastníctva', 'nezistené')
+    color = ownership_colors.get(ownership_type, "#d62728")  # Default farba pre 'nezistene'
     return {
-        'fillColor': '#3186cc',  # Farba výplne polygónov
-        'color': 'black',        # Farba hrán polygónov
-        'weight': 2,             # Hrúbka hrán
-        'fillOpacity': 0.6,      # Priehľadnosť výplne (0-1)
+        'fillColor': color,
+        'color': 'black',
+        'weight': 2,
+        'fillOpacity': 0.6,
     }
+
+#Vytvorenie interaktívnej mapy pomocou knižnice folium do objektu m
+m = folium.Map(location=[49.128173785261644, 18.42754307767109], zoom_start=5) 
 
 # Pridanie GeoDataFrame vrstvy na mapu so zvoleným štýlom
 folium.GeoJson(gdf, style_function=style_function).add_to(m)
