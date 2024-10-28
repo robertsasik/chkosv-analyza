@@ -36,7 +36,7 @@ tab = pd.read_sql_query(sql, con)
 st.dataframe(tab)
 
 #Zobrazenie interaktívnej tabuľky
-st.dataframe(gdf)
+#st.dataframe(gdf)
 
 #Konverzia súradnicového systému S-JTSK na WGS-84 pomocou geopandas
 gdf = gdf.to_crs(epsg=4326)
