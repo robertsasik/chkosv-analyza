@@ -19,7 +19,6 @@ password = st.secrets["db_password"]
 def get_db_connection():
     db_connection_url = f"postgresql://{user}:{password}@{host}:{port}/chko_sv_analyza"
     engine = create_engine(db_connection_url)
-    engine.dispose() 
     return engine
 
 #Volanie funkcie pomocou premennej con
@@ -70,6 +69,9 @@ folium.GeoJson(gdf, style_function=style_function).add_to(m)
 
 # Zobrazenie interaktívnej mapy v Streamlit
 st_folium(m, width=800, height=600)
+
+# Uzatvorenie pripojenia na konci skriptu
+con.dispose()
 
 st.write("Došiel som sem.")
 
