@@ -38,5 +38,26 @@ st.dataframe(tab)
 #Zobrazenie interaktívnej tabuľky
 st.dataframe(gdf)
 
+#Konverzia súradnicového systému S-JTSK na WGS-84 pomocou geopandas
+gdf = gdf.to_crs(epsg=4326)
+
+#Vytvorenie interaktívnej mapy pomocou knižnice folium do objektu m
+m = folium.Map(location=[49.128173785261644, 18.42754307767109], zoom_start=8) 
+
+#Definícia štýlu vykreslenia polygónovej vrstvy
+def style_function(feature):
+    return {
+        'fillColor': '#3186cc',  # Farba výplne polygónov
+        'color': 'black',        # Farba hrán polygónov
+        'weight': 2,             # Hrúbka hrán
+        'fillOpacity': 0.6,      # Priehľadnosť výplne (0-1)
+    }
+
+# Pridanie GeoDataFrame vrstvy na mapu so zvoleným štýlom
+folium.GeoJson(gdf, style_function=style_function).add_to(m)
+
+# Zobrazenie interaktívnej mapy v Streamlit
+st_folium(m, width=800, height=600)
+
 st.write("Došiel som sem.")
 
