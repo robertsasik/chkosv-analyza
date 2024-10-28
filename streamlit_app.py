@@ -26,7 +26,7 @@ def get_db_connection():
 con = get_db_connection()
 
 #SQL dopyt pomocou premennej sql
-sql = "SELECT * FROM chko_sv_vlastnictvo_v;"
+sql = "SELECT * FROM chko_sv_vlastnictvo_v LIMIT 5;"
 sql_m = "SELECT * FROM mapa_vlastnictvo_v;"
 
 #Pužitie geopandas na volanie relačnej tabuľky z PostgreSQL+Postgis databázy
