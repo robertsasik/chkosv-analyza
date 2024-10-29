@@ -5,6 +5,12 @@ import folium
 from sqlalchemy import create_engine
 from streamlit_folium import st_folium
 
+# Nastavenie layoutu na celú šírku stránky
+st.set_page_config(layout="wide")
+
+# Zvyšok vášho kódu
+st.title("Rozšírený Streamlit Dashboard")
+
 # Vytvorenie skrytých premenných na pripojenie do databázy
 host = st.secrets["db_host"]
 port = int(st.secrets["db_port"])
@@ -43,7 +49,7 @@ def load_data():
 tab, gdf = load_data()
 
 # Rozdelenie na tri stĺpce
-col1, col2, col3 = st.columns([1, 2, 1])  # Pomery stĺpcov, 1:2:1 (ľavý:pravy:legendový)
+col1, col2, col3 = st.columns([2, 1, 1])  # Pomery stĺpcov, 1:2:1 (ľavý:pravy:legendový)
 
 # Tabuľka na ľavej strane
 with col1:
@@ -85,33 +91,33 @@ with col2:
 
 # Legenda na pravej strane
 with col3:
-    st.subheader("Legenda")
+    #st.subheader("Legenda")
     # HTML pre legendu bez fixného pozicionovania
     legend_html = """
-    <div style="background: white; border:2px solid grey; padding: 10px; font-size: 14px;">
-        <h4 style="margin: 0;">Forma vlastníctva</h4>
+    <div style="background: white; padding: 0px; font-size: 12px;">
+        <h6 style="margin: 0;">Forma vlastníctva</h6>
         <div style="display: flex; align-items: center;">
-            <div style="background-color: #28b463; width: 20px; height: 20px; margin-right: 5px;"></div>
+            <div style="background-color: #28b463; width: 20px; height: 20px; margin-right: 5px; opacity: 0.5;"></div>
             <span>Štátne</span>
         </div>
         <div style="display: flex; align-items: center;">
-            <div style="background-color: #2980b9; width: 20px; height: 20px; margin-right: 5px;"></div>
+            <div style="background-color: #2980b9; width: 20px; height: 20px; margin-right: 5px; opacity: 0.5;"></div>
             <span>Miest, obcí, samosprávneho kraja</span>
         </div>
         <div style="display: flex; align-items: center;">
-            <div style="background-color: #935116; width: 20px; height: 20px; margin-right: 5px;"></div>
+            <div style="background-color: #935116; width: 20px; height: 20px; margin-right: 5px; opacity: 0.5;"></div>
             <span>Súkromné</span>
         </div>
         <div style="display: flex; align-items: center;">
-            <div style="background-color: #e74c3c; width: 20px; height: 20px; margin-right: 5px;"></div>
+            <div style="background-color: #e74c3c; width: 20px; height: 20px; margin-right: 5px; opacity: 0.5;"></div>
             <span>Spoločenstvenné</span>
         </div>
         <div style="display: flex; align-items: center;">
-            <div style="background-color: #7d3c98; width: 20px; height: 20px; margin-right: 5px;"></div>
+            <div style="background-color: #7d3c98; width: 20px; height: 20px; margin-right: 5px; opacity: 0.5;"></div>
             <span>Cirkevné</span>
         </div>
         <div style="display: flex; align-items: center;">
-            <div style="background-color: #f1c40f; width: 20px; height: 20px; margin-right: 5px;"></div>
+            <div style="background-color: #f1c40f; width: 20px; height: 20px; margin-right: 5px; opacity: 0.5;"></div>
             <span>Nezistené</span>
         </div>
     </div>
