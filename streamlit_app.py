@@ -1,8 +1,8 @@
 import streamlit as st
 import pandas as pd
-from sqlalchemy import create_engine
 import geopandas as gpd
 import folium
+from sqlalchemy import create_engine
 from streamlit_folium import st_folium
 
 # Vytvorenie skrytých premenných na pripojenie do databázy
@@ -12,7 +12,7 @@ database = st.secrets["db_database"]
 user = st.secrets["db_user"]
 password = st.secrets["db_password"]
 
-@st.cache_resource  # Dekorátor na kešovanie pripojenia
+# Funkcia na vytvorenie databázového spojenia
 def get_db_connection():
     db_connection_url = f"postgresql://{user}:{password}@{host}:{port}/{database}"
     engine = create_engine(db_connection_url)
@@ -41,36 +41,83 @@ def load_data():
 
 # Načítanie údajov
 tab, gdf = load_data()
-st.dataframe(tab)
 
-# Definovanie farebnej mapy pre jednotlivé formy vlastníctva
-ownership_colors = {
-    "štátne": "#3186cc",
-    "miest, obcí, samosprávneho kraja": "#32a852",
-    "súkromné": "#e377c2",
-    "spoločenstvenné": "#ff7f0e",
-    "cirkevné": "#ff7f0e",
-    "nezistené": "#d62728"
-}
+# Rozdelenie na tri stĺpce
+col1, col2, col3 = st.columns([1, 2, 1])  # Pomery stĺpcov, 1:2:1 (ľavý:pravy:legendový)
 
-# Deklarácia štýlovej funkcie s farbami podľa formy vlastníctva
-def style_function(feature):
-    ownership_type = feature['properties'].get('Forma vlastníctva', 'nezistené')
-    color = ownership_colors.get(ownership_type, "#d62728")  # Default farba pre 'nezistené'
-    return {
-        'fillColor': color,
-        'color': 'black',
-        'weight': 0,
-        'fillOpacity': 0.6,
+# Tabuľka na ľavej strane
+with col1:
+    st.subheader("Tabuľka údajov")
+    st.dataframe(tab)
+
+# Mapa na pravej strane
+with col2:
+    # Definovanie farebnej mapy pre jednotlivé formy vlastníctva
+    ownership_colors = {
+        "štátne": "#28b463",
+        "miest, obcí, samosprávneho kraja": "#2980b9",
+        "súkromné": "#935116",
+        "spoločenstvenné": "#e74c3c",
+        "cirkevné": "#7d3c98",
+        "nezistené": "#f1c40f"
     }
 
-# Vytvorenie interaktívnej mapy pomocou knižnice folium do objektu m
-m = folium.Map(location=[49.128173785261644, 18.42754307767109], zoom_start=12)
+    # Deklarácia štýlovej funkcie s farbami podľa formy vlastníctva
+    def style_function(feature):
+        ownership_type = feature['properties'].get('Forma vlastníctva', 'nezistené')
+        color = ownership_colors.get(ownership_type, "#f1c40f")  # Default farba pre 'nezistené'
+        return {
+            'fillColor': color,
+            'color': 'black',
+            'weight': 0.1,  # Nastavenie hrúbky obrysu
+            'fillOpacity': 0.5,  # Priehľadnosť výplne
+            'opacity': 0.6  # Priehľadnosť obrysu
+        }
 
-# Pridanie GeoDataFrame vrstvy na mapu so zvoleným štýlom
-folium.GeoJson(gdf, style_function=style_function).add_to(m)
+    # Vytvorenie interaktívnej mapy pomocou knižnice folium do objektu m
+    m = folium.Map(location=[49.04519085530501, 18.45598270193193], zoom_start=10, tiles="CartoDB positron")
 
-# Zobrazenie interaktívnej mapy v Streamlit
-st_folium(m, width=800, height=600)
+    # Pridanie GeoDataFrame vrstvy na mapu so zvoleným štýlom
+    folium.GeoJson(gdf, style_function=style_function).add_to(m)
+
+    # Zobrazenie interaktívnej mapy v Streamlit
+    st_folium(m, width=300, height=600)
+
+# Legenda na pravej strane
+with col3:
+    st.subheader("Legenda")
+    # HTML pre legendu bez fixného pozicionovania
+    legend_html = """
+    <div style="background: white; border:2px solid grey; padding: 10px; font-size: 14px;">
+        <h4 style="margin: 0;">Forma vlastníctva</h4>
+        <div style="display: flex; align-items: center;">
+            <div style="background-color: #28b463; width: 20px; height: 20px; margin-right: 5px;"></div>
+            <span>Štátne</span>
+        </div>
+        <div style="display: flex; align-items: center;">
+            <div style="background-color: #2980b9; width: 20px; height: 20px; margin-right: 5px;"></div>
+            <span>Miest, obcí, samosprávneho kraja</span>
+        </div>
+        <div style="display: flex; align-items: center;">
+            <div style="background-color: #935116; width: 20px; height: 20px; margin-right: 5px;"></div>
+            <span>Súkromné</span>
+        </div>
+        <div style="display: flex; align-items: center;">
+            <div style="background-color: #e74c3c; width: 20px; height: 20px; margin-right: 5px;"></div>
+            <span>Spoločenstvenné</span>
+        </div>
+        <div style="display: flex; align-items: center;">
+            <div style="background-color: #7d3c98; width: 20px; height: 20px; margin-right: 5px;"></div>
+            <span>Cirkevné</span>
+        </div>
+        <div style="display: flex; align-items: center;">
+            <div style="background-color: #f1c40f; width: 20px; height: 20px; margin-right: 5px;"></div>
+            <span>Nezistené</span>
+        </div>
+    </div>
+    """
+    
+    # Pridanie legendy do Streamlit ako HTML
+    st.markdown(legend_html, unsafe_allow_html=True)
 
 st.write("Došiel som sem.")
