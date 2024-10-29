@@ -4,12 +4,22 @@ import geopandas as gpd
 import folium
 from sqlalchemy import create_engine
 from streamlit_folium import st_folium
+from PIL import Image
 
 # Nastavenie layoutu na celú šírku stránky
 st.set_page_config(layout="wide")
 
-# Zvyšok vášho kódu
-st.title("Rozšírený Streamlit Dashboard")
+# Prvý "riadok" s dvomi stĺpcami
+row1_col1, row1_col2 = st.columns([1, 5])
+
+with row1_col1:
+    image = Image.open("data/strazovske_vrchy.gif") 
+    st.image(image, use_column_width=False)
+    
+    
+with row1_col2:
+    st.title("Rozšírený Streamlit Dashboard")
+    st.write("Toto je popis dashboardu.")
 
 # Vytvorenie skrytých premenných na pripojenie do databázy
 host = st.secrets["db_host"]
@@ -49,7 +59,7 @@ def load_data():
 tab, gdf = load_data()
 
 # Rozdelenie na tri stĺpce
-col1, col2, col3 = st.columns([2, 1, 1])  # Pomery stĺpcov, 1:2:1 (ľavý:pravy:legendový)
+col1, col2, col3 = st.columns([2, 1, 1])  # Pomery stĺpcov, 2:1:1 (ľavý:pravy:legendový)
 
 # Tabuľka na ľavej strane
 with col1:
@@ -81,7 +91,7 @@ with col2:
         }
 
     # Vytvorenie interaktívnej mapy pomocou knižnice folium do objektu m
-    m = folium.Map(location=[49.04519085530501, 18.45598270193193], zoom_start=10, tiles="CartoDB positron")
+    m = folium.Map(location=[49.04519085530501, 18.45598270193193], zoom_start=10, tiles="OpenTopoMap")  #CartoDB positron
 
     # Pridanie GeoDataFrame vrstvy na mapu so zvoleným štýlom
     folium.GeoJson(gdf, style_function=style_function).add_to(m)
