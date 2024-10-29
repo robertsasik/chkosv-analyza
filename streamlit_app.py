@@ -20,7 +20,7 @@ def get_db_connection():
 
 # SQL dopyty pre jednotlivé tabuľky
 sql_vlastnictvo = "SELECT * FROM vztahy_vlastnictvo;"
-sql_mapa = "SELECT * FROM mapa_vlastnictvo;"
+sql_mapa = "SELECT * FROM mapa_vlastnictvo_zl;"
 
 # Funkcia na načítanie dát a konverziu CRS (s kešovaním)
 @st.cache_data
