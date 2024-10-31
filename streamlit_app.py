@@ -7,15 +7,15 @@ from streamlit_folium import st_folium
 from PIL import Image
 
 # Nastavenie layoutu na celú šírku stránky
-#st.set_page_config(layout="wide")
+st.set_page_config(layout="wide")
 
-# CSS pre pevné výšky stĺpcov
+# CSS pre flexibilné výšky stĺpcov
 st.markdown("""
     <style>
-    /* CSS pre pevné výšky */
-    .fixed-height-col {
-        height: 600px; /* Nastavte požadovanú pevnú výšku */
+    /* CSS pre flexibilné výšky */
+    .flexible-height-col {
         overflow-y: auto; /* Povolenie vertikálneho scrollovania, ak obsah presahuje */
+        max-height: 600px; /* Nastavenie maximálnej výšky pre flexibilitu */
     }
     </style>
     """, unsafe_allow_html=True)
@@ -24,12 +24,12 @@ st.markdown("""
 row1_col1, row1_col2 = st.columns([1, 6])
 
 with row1_col1:
-    image = Image.open("data/strazovske_vrchy.png") 
+    image = Image.open("data/strazovske_vrchy.gif") 
     st.image(image, use_column_width=False)
 
 with row1_col2:
     st.title("Chránená krajinná oblasť Strážovské vrchy")
-    st.write("### Analýza vlastníckych vzťahov")
+    st.write("###   Analýza vlastníckych vzťahov")
 
 # Vytvorenie skrytých premenných na pripojenie do databázy
 host = st.secrets["db_host"]
@@ -75,13 +75,13 @@ col1, col2, col3 = st.columns([2, 3, 2])  # Pomery stĺpcov, 3:2:1 (ľavý:pravy
 
 # Tabuľka na ľavej strane
 with col1:
-    st.markdown('<div class="fixed-height-col">', unsafe_allow_html=True)  # Začiatok divu s pevnou výškou
+    st.markdown('<div class="flexible-height-col">', unsafe_allow_html=True)  # Začiatok divu s flexibilnou výškou
     st.dataframe(tab)
-    st.markdown('</div>', unsafe_allow_html=True)  # Koniec divu s pevnou výškou
+    st.markdown('</div>', unsafe_allow_html=True)  # Koniec divu s flexibilnou výškou
 
 # Mapa na pravej strane
 with col2:
-    st.markdown('<div class="fixed-height-col custom-map">', unsafe_allow_html=True)  # Začiatok divu s pevnou výškou a vlastnou šírkou
+    st.markdown('<div class="flexible-height-col">', unsafe_allow_html=True)  # Začiatok divu s flexibilnou výškou
     # Definovanie farebnej mapy pre jednotlivé formy vlastníctva
     ownership_colors = {
         "štátne": "#28b463",
@@ -111,12 +111,12 @@ with col2:
     folium.GeoJson(gdf, style_function=style_function).add_to(m)
 
     # Zobrazenie interaktívnej mapy v Streamlit
-    st_folium(m, width=300, height=600)  # Nastavenie šírky mapy na 600
-    st.markdown('</div>', unsafe_allow_html=True)  # Koniec divu s pevnou výškou
+    st_folium(m, width=600, height=600)  # Nastavenie šírky mapy na 600
+    st.markdown('</div>', unsafe_allow_html=True)  # Koniec divu s flexibilnou výškou
 
 # Legenda na pravej strane
 with col3:
-    st.markdown('<div class="fixed-height-col">', unsafe_allow_html=True)  # Začiatok divu s pevnou výškou
+    st.markdown('<div class="flexible-height-col">', unsafe_allow_html=True)  # Začiatok divu s flexibilnou výškou
     legend_html = """
     <div style="background: white; padding: 0px; font-size: 12px;">
         <h6 style="margin: 0;">Forma vlastníctva</h6>
@@ -149,7 +149,7 @@ with col3:
     
     # Pridanie legendy do Streamlit ako HTML
     st.markdown(legend_html, unsafe_allow_html=True)
-    st.markdown('</div>', unsafe_allow_html=True)  # Koniec divu s pevnou výškou
+    st.markdown('</div>', unsafe_allow_html=True)  # Koniec divu s flexibilnou výškou
 
 st.write("---")
 st.write("Analýza vlastníckych vzťahov podľa kategórií")
