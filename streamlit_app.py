@@ -84,10 +84,16 @@ with row2_col1:
     )
     # Definovanie aliasov pre stĺpce
     aliases = {
-        '0': 'Alias 1',
-        '10': 'Alias 2',
-        '11': 'Alias 3',
-        # Pridajte ďalšie aliasy podľa potreby
+        2: 'orná pôda',
+        3: 'chmeľnica',
+        4: 'vinica',
+        5: 'zahrada',
+        6: 'ovocný sad',
+        7: 'trvalý trávny porast',
+        10: 'lesný pozemok',
+        11: 'vodná plocha',
+        13: 'zastavaná plocha a nádvorie',
+        14: 'ostatná plocha',
     }
 
     # Preformátovanie hodnôt v pivot tabuľke
@@ -198,3 +204,5 @@ with row3_col2:
         st.write("aaa")
 
 ########################### koniec - tretí riadok a tri stĺpce ###########################
+
+st.write("---")
