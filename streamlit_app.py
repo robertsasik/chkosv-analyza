@@ -10,16 +10,15 @@ from PIL import Image
 #st.set_page_config(layout="wide")
 
 # CSS pre pevné výšky stĺpcov
-# CSS pre flexibilné výšky stĺpcov
 st.markdown("""
     <style>
-    /* CSS pre flexibilné výšky */
+    /* CSS pre pevné výšky */
     .fixed-height-col {
+        height: 600px; /* Nastavte požadovanú pevnú výšku */
         overflow-y: auto; /* Povolenie vertikálneho scrollovania, ak obsah presahuje */
     }
     </style>
     """, unsafe_allow_html=True)
-
 
 # Prvý "riadok" s dvomi stĺpcami
 row1_col1, row1_col2 = st.columns([1, 6])
@@ -27,7 +26,7 @@ row1_col1, row1_col2 = st.columns([1, 6])
 with row1_col1:
     image = Image.open("data/strazovske_vrchy.png") 
     st.image(image, use_column_width=False)
-    
+
 with row1_col2:
     st.title("Chránená krajinná oblasť Strážovské vrchy")
     st.write("### Analýza vlastníckych vzťahov")
@@ -82,7 +81,7 @@ with col1:
 
 # Mapa na pravej strane
 with col2:
-    st.markdown('<div class="fixed-height-col">', unsafe_allow_html=True)  # Začiatok divu s pevnou výškou
+    st.markdown('<div class="fixed-height-col custom-map">', unsafe_allow_html=True)  # Začiatok divu s pevnou výškou a vlastnou šírkou
     # Definovanie farebnej mapy pre jednotlivé formy vlastníctva
     ownership_colors = {
         "štátne": "#28b463",
@@ -112,7 +111,7 @@ with col2:
     folium.GeoJson(gdf, style_function=style_function).add_to(m)
 
     # Zobrazenie interaktívnej mapy v Streamlit
-    st_folium(m, width=300, height=600)
+    st_folium(m, width=300, height=600)  # Nastavenie šírky mapy na 600
     st.markdown('</div>', unsafe_allow_html=True)  # Koniec divu s pevnou výškou
 
 # Legenda na pravej strane
@@ -171,8 +170,9 @@ pivot_table = pd.pivot_table(
     fill_value=0            # Náhrada prázdnych hodnôt
 )
 
-# Zobrazenie tabuľky v Streamlite
+# Preformátovanie hodnôt v pivot tabuľke
+pivot_table = pivot_table.applymap(lambda x: f"{x:,.2f}".replace('.', ',')).fillna('0,00')
+
+# Zobrazenie tabuľky v Streamlit
 st.write("Kontingenčná tabuľka")
-
-
-st.dataframe(pivot_table)
+st.dataframe(pivot_table, use_container_width=True)  # Prispôsobenie šírky tabuľky
