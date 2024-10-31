@@ -135,9 +135,9 @@ with col3:
     # Pridanie legendy do Streamlit ako HTML
     st.markdown(legend_html, unsafe_allow_html=True)
 
-row1_col3, row1_col2 = st.columns([1,1])
-with row1_col3:
-    image = Image.open("data/strazovske_vrchy.png") 
-    st.image(image, use_column_width=True)
+# Druhý "riadok" na celú šírku, pred textom "Došiel som sem"
+st.write("---")  # Voliteľný oddeľovač
+st.write("Analýza vlastníckych vzťahov podľa kategórií")
 
+# Záverečný text
 st.write("Došiel som sem.")
