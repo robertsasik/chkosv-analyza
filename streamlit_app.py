@@ -9,6 +9,16 @@ from PIL import Image
 # Nastavenie layoutu na celú šírku stránky
 #st.set_page_config(layout="wide")
 
+# CSS pre pevné výšky stĺpcov
+st.markdown("""
+    <style>
+    /* CSS pre flexibilné výšky */
+    .fixed-height-col {
+        overflow-y: auto; /* Povolenie vertikálneho scrollovania, ak obsah presahuje */
+                      }
+    </style>
+    """, unsafe_allow_html=True)
+
 # Prvý "riadok" s dvomi stĺpcami
 row1_col1, row1_col2 = st.columns([1, 6])
 
@@ -36,6 +46,7 @@ def get_db_connection():
 # SQL dopyty pre jednotlivé tabuľky
 sql_vlastnictvo = "SELECT * FROM vztahy_vlastnictvo;"
 sql_mapa = "SELECT * FROM mapa_vlastnictvo_zl;"
+sql_drp =  "SELECT * FROM mapa_vlastnictvo_drp;"
 
 # Funkcia na načítanie dát a konverziu CRS (s kešovaním)
 @st.cache_data
@@ -45,6 +56,7 @@ def load_data():
     # Načítanie dát z databázy
     tab = pd.read_sql_query(sql_vlastnictvo, con)
     gdf = gpd.read_postgis(sql_mapa, con, geom_col='geom', crs=5514)
+    tab_kon = pd.read_sql_query(sql_drp, con)
     
     # Konverzia súradnicového systému
     gdf = gdf.to_crs(epsg=4326)
@@ -52,21 +64,23 @@ def load_data():
     # Uzavretie pripojenia po načítaní dát
     con.dispose()
     
-    return tab, gdf
+    return tab, gdf, tab_kon
 
 # Načítanie údajov
-tab, gdf = load_data()
+tab, gdf, tab_kon = load_data()
 
-# Rozdelenie na tri stĺpce
+# Rozdelenie na tri stĺpce s pevnou výškou
 col1, col2, col3 = st.columns([2, 3, 2])  # Pomery stĺpcov, 3:2:1 (ľavý:pravy:legendový)
 
 # Tabuľka na ľavej strane
 with col1:
-    #st.subheader("Tabuľka údajov")
+    st.markdown('<div class="fixed-height-col">', unsafe_allow_html=True)  # Začiatok divu s pevnou výškou
     st.dataframe(tab)
+    st.markdown('</div>', unsafe_allow_html=True)  # Koniec divu s pevnou výškou
 
 # Mapa na pravej strane
 with col2:
+    st.markdown('<div class="fixed-height-col">', unsafe_allow_html=True)  # Začiatok divu s pevnou výškou
     # Definovanie farebnej mapy pre jednotlivé formy vlastníctva
     ownership_colors = {
         "štátne": "#28b463",
@@ -90,18 +104,18 @@ with col2:
         }
 
     # Vytvorenie interaktívnej mapy pomocou knižnice folium do objektu m
-    m = folium.Map(location=[49.04519085530501, 18.45598270193193], zoom_start=10, tiles="OpenTopoMap")  #CartoDB positron
+    m = folium.Map(location=[49.04519085530501, 18.45598270193193], zoom_start=10, tiles="OpenTopoMap")
 
     # Pridanie GeoDataFrame vrstvy na mapu so zvoleným štýlom
     folium.GeoJson(gdf, style_function=style_function).add_to(m)
 
     # Zobrazenie interaktívnej mapy v Streamlit
     st_folium(m, width=300, height=600)
+    st.markdown('</div>', unsafe_allow_html=True)  # Koniec divu s pevnou výškou
 
 # Legenda na pravej strane
 with col3:
-    #st.subheader("Legenda")
-    # HTML pre legendu bez fixného pozicionovania
+    st.markdown('<div class="fixed-height-col">', unsafe_allow_html=True)  # Začiatok divu s pevnou výškou
     legend_html = """
     <div style="background: white; padding: 0px; font-size: 12px;">
         <h6 style="margin: 0;">Forma vlastníctva</h6>
@@ -134,10 +148,9 @@ with col3:
     
     # Pridanie legendy do Streamlit ako HTML
     st.markdown(legend_html, unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)  # Koniec divu s pevnou výškou
 
-# Druhý "riadok" na celú šírku, pred textom "Došiel som sem"
-st.write("---")  # Voliteľný oddeľovač
+st.write("---")
 st.write("Analýza vlastníckych vzťahov podľa kategórií")
-
-# Záverečný text
 st.write("Došiel som sem.")
+st.dataframe(tab_kon)
