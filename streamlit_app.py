@@ -10,14 +10,16 @@ from PIL import Image
 #st.set_page_config(layout="wide")
 
 # CSS pre pevné výšky stĺpcov
+# CSS pre flexibilné výšky stĺpcov
 st.markdown("""
     <style>
     /* CSS pre flexibilné výšky */
     .fixed-height-col {
         overflow-y: auto; /* Povolenie vertikálneho scrollovania, ak obsah presahuje */
-                      }
+    }
     </style>
     """, unsafe_allow_html=True)
+
 
 # Prvý "riadok" s dvomi stĺpcami
 row1_col1, row1_col2 = st.columns([1, 6])
@@ -153,4 +155,24 @@ with col3:
 st.write("---")
 st.write("Analýza vlastníckych vzťahov podľa kategórií")
 st.write("Došiel som sem.")
-st.dataframe(tab_kon)
+#st.dataframe(tab_kon)
+
+# Definujte vlastnú funkciu na zreťazenie hodnôt s medzerou ako oddeľovač
+def concat_with_space(series):
+    return ' '.join(series.astype(str))
+
+# Vytvorenie pivot tabuľky so špecifikovanými názvami stĺpcov
+pivot_table = pd.pivot_table(
+    tab_kon,
+    values='Celková plocha (ha)',       # Hodnota, ktorú sumarizujeme
+    index='Forma vlastníctva',      # Riadky tabuľky
+    columns='Druh pozemku',          # Stĺpce tabuľky
+    aggfunc='sum',          # Sumarizačná funkcia, napr. sum
+    fill_value=0            # Náhrada prázdnych hodnôt
+)
+
+# Zobrazenie tabuľky v Streamlite
+st.write("Kontingenčná tabuľka")
+
+
+st.dataframe(pivot_table)
