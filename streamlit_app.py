@@ -7,29 +7,22 @@ from streamlit_folium import st_folium
 from PIL import Image
 
 # Nastavenie layoutu na celú šírku stránky
-st.set_page_config(layout="wide")
-
-# CSS pre flexibilné výšky stĺpcov
-st.markdown("""
-    <style>
-    /* CSS pre flexibilné výšky */
-    .flexible-height-col {
-        overflow-y: auto; /* Povolenie vertikálneho scrollovania, ak obsah presahuje */
-        max-height: 600px; /* Nastavenie maximálnej výšky pre flexibilitu */
-    }
-    </style>
-    """, unsafe_allow_html=True)
+#st.set_page_config(layout="wide")
 
 # Prvý "riadok" s dvomi stĺpcami
 row1_col1, row1_col2 = st.columns([1, 6])
 
+print("------------------------------------------------")
 with row1_col1:
-    image = Image.open("data/strazovske_vrchy.gif") 
-    st.image(image, use_column_width=False)
-
+    image = Image.open("data/strazovske_vrchy.png")
+    st.image(image, use_column_width=True) 
 with row1_col2:
-    st.title("Chránená krajinná oblasť Strážovské vrchy")
-    st.write("###   Analýza vlastníckych vzťahov")
+    st.write("### Chránená krajinná oblasť Strážovské vrchy")
+    st.write("####   Analýza vlastníckych vzťahov")
+print("------------------------------------------------")
+
+
+
 
 # Vytvorenie skrytých premenných na pripojenie do databázy
 host = st.secrets["db_host"]
@@ -71,16 +64,43 @@ def load_data():
 tab, gdf, tab_kon = load_data()
 
 # Rozdelenie na tri stĺpce s pevnou výškou
-col1, col2, col3 = st.columns([2, 3, 2])  # Pomery stĺpcov, 3:2:1 (ľavý:pravy:legendový)
+row3_col1, row3_col2, = st.columns([5, 2])  # Pomery stĺpcov, 5:2(ľavý:pravy)
+with row3_col1:
+    st.write("---")
+    st.write("Analýza vlastníckych vzťahov podľa kategórií")
+    st.write("Došiel som sem.")
+    #st.dataframe(tab_kon)
 
-# Tabuľka na ľavej strane
-with col1:
-    st.markdown('<div class="flexible-height-col">', unsafe_allow_html=True)  # Začiatok divu s flexibilnou výškou
-    st.dataframe(tab)
-    st.markdown('</div>', unsafe_allow_html=True)  # Koniec divu s flexibilnou výškou
+    # Definujte vlastnú funkciu na zreťazenie hodnôt s medzerou ako oddeľovač
+    def concat_with_space(series):
+        return ' '.join(series.astype(str))
+
+    # Vytvorenie pivot tabuľky so špecifikovanými názvami stĺpcov
+    pivot_table = pd.pivot_table(
+        tab_kon,
+        values='Celková plocha (ha)',       # Hodnota, ktorú sumarizujeme
+        index='Forma vlastníctva',      # Riadky tabuľky
+        columns='Druh pozemku',          # Stĺpce tabuľky
+        aggfunc='sum',          # Sumarizačná funkcia, napr. sum
+        fill_value=0            # Náhrada prázdnych hodnôt
+    )
+
+    # Preformátovanie hodnôt v pivot tabuľke
+    pivot_table = pivot_table.applymap(lambda x: f"{x:,.2f}".replace('.', ',')).fillna('0,00')
+
+    # Zobrazenie tabuľky v Streamlit
+    st.write("Kontingenčná tabuľka")
+    st.dataframe(pivot_table, use_container_width=True)  # Prispôsobenie šírky tabuľky
+
+
+with row3_col2:
+    st.write("Tu budu grafy")
+
+# Rozdelenie na tri stĺpce s pevnou výškou
+row2_col1, row2_col2 = st.columns([5, 2])  # Pomery stĺpcov, 5:2(ľavý:pravy)
 
 # Mapa na pravej strane
-with col2:
+with row2_col1:
     st.markdown('<div class="flexible-height-col">', unsafe_allow_html=True)  # Začiatok divu s flexibilnou výškou
     # Definovanie farebnej mapy pre jednotlivé formy vlastníctva
     ownership_colors = {
@@ -105,17 +125,17 @@ with col2:
         }
 
     # Vytvorenie interaktívnej mapy pomocou knižnice folium do objektu m
-    m = folium.Map(location=[49.04519085530501, 18.45598270193193], zoom_start=10, tiles="OpenTopoMap")
+    m = folium.Map(location=[49.04519085530501, 18.45598270193193], zoom_start=10.5, tiles="OpenTopoMap")
 
     # Pridanie GeoDataFrame vrstvy na mapu so zvoleným štýlom
     folium.GeoJson(gdf, style_function=style_function).add_to(m)
 
     # Zobrazenie interaktívnej mapy v Streamlit
-    st_folium(m, width=600, height=600)  # Nastavenie šírky mapy na 600
+    st_folium(m, width=600, height=500)  # Nastavenie šírky mapy na 600
     st.markdown('</div>', unsafe_allow_html=True)  # Koniec divu s flexibilnou výškou
 
 # Legenda na pravej strane
-with col3:
+with row2_col2:
     st.markdown('<div class="flexible-height-col">', unsafe_allow_html=True)  # Začiatok divu s flexibilnou výškou
     legend_html = """
     <div style="background: white; padding: 0px; font-size: 12px;">
@@ -151,28 +171,5 @@ with col3:
     st.markdown(legend_html, unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)  # Koniec divu s flexibilnou výškou
 
-st.write("---")
-st.write("Analýza vlastníckych vzťahov podľa kategórií")
-st.write("Došiel som sem.")
-#st.dataframe(tab_kon)
 
-# Definujte vlastnú funkciu na zreťazenie hodnôt s medzerou ako oddeľovač
-def concat_with_space(series):
-    return ' '.join(series.astype(str))
 
-# Vytvorenie pivot tabuľky so špecifikovanými názvami stĺpcov
-pivot_table = pd.pivot_table(
-    tab_kon,
-    values='Celková plocha (ha)',       # Hodnota, ktorú sumarizujeme
-    index='Forma vlastníctva',      # Riadky tabuľky
-    columns='Druh pozemku',          # Stĺpce tabuľky
-    aggfunc='sum',          # Sumarizačná funkcia, napr. sum
-    fill_value=0            # Náhrada prázdnych hodnôt
-)
-
-# Preformátovanie hodnôt v pivot tabuľke
-pivot_table = pivot_table.applymap(lambda x: f"{x:,.2f}".replace('.', ',')).fillna('0,00')
-
-# Zobrazenie tabuľky v Streamlit
-st.write("Kontingenčná tabuľka")
-st.dataframe(pivot_table, use_container_width=True)  # Prispôsobenie šírky tabuľky
