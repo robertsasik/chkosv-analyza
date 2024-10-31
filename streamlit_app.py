@@ -7,22 +7,22 @@ from streamlit_folium import st_folium
 from PIL import Image
 
 # Nastavenie layoutu na celú šírku stránky
-#st.set_page_config(layout="wide")
+st.set_page_config(layout="wide")
 
-# Prvý "riadok" s dvomi stĺpcami
-row1_col1, row1_col2 = st.columns([1, 6])
+######################### dashboard - prvý riadok a dva stĺpce #########################
 
-print("------------------------------------------------")
+row1_col1, row1_col2 = st.columns([1, 7])
+
 with row1_col1:
     image = Image.open("data/strazovske_vrchy.png")
-    st.image(image, use_column_width=True) 
+    st.image(image, use_column_width=False) 
+    
 with row1_col2:
     st.write("### Chránená krajinná oblasť Strážovské vrchy")
     st.write("####   Analýza vlastníckych vzťahov")
-print("------------------------------------------------")
 
-
-
+########################### koniec - prvý riadok a dva stĺpce ###########################
+st.write("---")
 
 # Vytvorenie skrytých premenných na pripojenie do databázy
 host = st.secrets["db_host"]
@@ -40,7 +40,7 @@ def get_db_connection():
 # SQL dopyty pre jednotlivé tabuľky
 sql_vlastnictvo = "SELECT * FROM vztahy_vlastnictvo;"
 sql_mapa = "SELECT * FROM mapa_vlastnictvo_zl;"
-sql_drp =  "SELECT * FROM mapa_vlastnictvo_drp;"
+sql_drp =  "SELECT * FROM mapa_vlastnictvo_drp1;"
 
 # Funkcia na načítanie dát a konverziu CRS (s kešovaním)
 @st.cache_data
@@ -51,7 +51,6 @@ def load_data():
     tab = pd.read_sql_query(sql_vlastnictvo, con)
     gdf = gpd.read_postgis(sql_mapa, con, geom_col='geom', crs=5514)
     tab_kon = pd.read_sql_query(sql_drp, con)
-    
     # Konverzia súradnicového systému
     gdf = gdf.to_crs(epsg=4326)
     
@@ -63,17 +62,14 @@ def load_data():
 # Načítanie údajov
 tab, gdf, tab_kon = load_data()
 
-# Rozdelenie na tri stĺpce s pevnou výškou
-row3_col1, row3_col2, = st.columns([5, 2])  # Pomery stĺpcov, 5:2(ľavý:pravy)
-with row3_col1:
-    st.write("---")
-    st.write("Analýza vlastníckych vzťahov podľa kategórií")
-    st.write("Došiel som sem.")
-    #st.dataframe(tab_kon)
+######################### dashboard - druhý riadok a dva stĺpce #########################
 
-    # Definujte vlastnú funkciu na zreťazenie hodnôt s medzerou ako oddeľovač
-    def concat_with_space(series):
-        return ' '.join(series.astype(str))
+row2_col1, row2_col2, = st.columns([5, 2])  # Pomery stĺpcov, 5:2(ľavý:pravy)
+with row2_col1:
+    
+    st.write("Analýza vlastníckych vzťahov podľa kategórií")
+    
+    #st.dataframe(tab_kon)
 
     # Vytvorenie pivot tabuľky so špecifikovanými názvami stĺpcov
     pivot_table = pd.pivot_table(
@@ -82,25 +78,43 @@ with row3_col1:
         index='Forma vlastníctva',      # Riadky tabuľky
         columns='Druh pozemku',          # Stĺpce tabuľky
         aggfunc='sum',          # Sumarizačná funkcia, napr. sum
-        fill_value=0            # Náhrada prázdnych hodnôt
+        fill_value=0,            # Náhrada prázdnych hodnôt
+        margins=True,            # Pridanie súčtov za riadky a stĺpce
+        margins_name='Súčet'     # Názov pre riadok a stĺpec so súčtom
     )
+    # Definovanie aliasov pre stĺpce
+    aliases = {
+        '0': 'Alias 1',
+        '10': 'Alias 2',
+        '11': 'Alias 3',
+        # Pridajte ďalšie aliasy podľa potreby
+    }
 
     # Preformátovanie hodnôt v pivot tabuľke
-    pivot_table = pivot_table.applymap(lambda x: f"{x:,.2f}".replace('.', ',')).fillna('0,00')
+    # Zmena oddelovača tisícok na medzeru a zaokrúhlenie na 2 desatinné miesta
+    pivot_table = pivot_table.applymap(lambda x: f"{x:,.2f}".replace(',', ' ').replace('.', ','))
+    # Priradenie aliasov stĺpcom
+    pivot_table.rename(columns=aliases, inplace=True)
 
     # Zobrazenie tabuľky v Streamlit
     st.write("Kontingenčná tabuľka")
     st.dataframe(pivot_table, use_container_width=True)  # Prispôsobenie šírky tabuľky
 
 
-with row3_col2:
+    #st.dataframe(pivot_table)
+
+with row2_col2:
     st.write("Tu budu grafy")
 
+########################### koniec - druhý riadok a dva stĺpce ###########################
+st.write("---")
+
+######################### dashboard - tretí riadok a tri stĺpce #########################
 # Rozdelenie na tri stĺpce s pevnou výškou
-row2_col1, row2_col2 = st.columns([5, 2])  # Pomery stĺpcov, 5:2(ľavý:pravy)
+row3_col1, row3_col2, row3_col3 = st.columns([6, 1, 2])  # Pomery stĺpcov, 5:2(ľavý:pravy)
 
 # Mapa na pravej strane
-with row2_col1:
+with row3_col1:
     st.markdown('<div class="flexible-height-col">', unsafe_allow_html=True)  # Začiatok divu s flexibilnou výškou
     # Definovanie farebnej mapy pre jednotlivé formy vlastníctva
     ownership_colors = {
@@ -125,17 +139,27 @@ with row2_col1:
         }
 
     # Vytvorenie interaktívnej mapy pomocou knižnice folium do objektu m
-    m = folium.Map(location=[49.04519085530501, 18.45598270193193], zoom_start=10.5, tiles="OpenTopoMap")
+    #m = folium.Map(location=[49.04519085530501, 18.45598270193193], zoom_start=11, tiles="Esri.WorldTopoMap") #Esri.WorldShadedRelief, OpenTopoMap
 
+    # Vytvorenie interaktívnej mapy
+    m = folium.Map(location=[49.04519085530501, 18.45598270193193], zoom_start=11)
+    
     # Pridanie GeoDataFrame vrstvy na mapu so zvoleným štýlom
-    folium.GeoJson(gdf, style_function=style_function).add_to(m)
+    folium.GeoJson(gdf, style_function=style_function, name = "Forma vlastnictva").add_to(m)
+    
+    # Pridanie rôznych basemáp
+    folium.TileLayer("OpenTopoMap", name="OpenTopo Map").add_to(m)
+    folium.TileLayer("Esri.WorldTopoMap", name="Esri Topo Map").add_to(m)
+    folium.TileLayer("Esri.WorldShadedRelief", name="Esri Shaded Relief").add_to(m)
+
+    # Pridanie prepínača na ovládanie vrstiev
+    folium.LayerControl().add_to(m)
 
     # Zobrazenie interaktívnej mapy v Streamlit
-    st_folium(m, width=600, height=500)  # Nastavenie šírky mapy na 600
-    st.markdown('</div>', unsafe_allow_html=True)  # Koniec divu s flexibilnou výškou
-
-# Legenda na pravej strane
-with row2_col2:
+    st_folium(m, width=1100, height=780)  # Nastavenie šírky a výšky mapy
+    
+# Legenda v strednom stlpci
+with row3_col2:
     st.markdown('<div class="flexible-height-col">', unsafe_allow_html=True)  # Začiatok divu s flexibilnou výškou
     legend_html = """
     <div style="background: white; padding: 0px; font-size: 12px;">
@@ -170,6 +194,7 @@ with row2_col2:
     # Pridanie legendy do Streamlit ako HTML
     st.markdown(legend_html, unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)  # Koniec divu s flexibilnou výškou
+    with row3_col3:
+        st.write("aaa")
 
-
-
+########################### koniec - tretí riadok a tri stĺpce ###########################
