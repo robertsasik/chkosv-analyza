@@ -7,19 +7,18 @@ from streamlit_folium import st_folium
 from PIL import Image
 
 # Nastavenie layoutu na celú šírku stránky
-st.set_page_config(layout="wide")
+#st.set_page_config(layout="wide")
 
 # Prvý "riadok" s dvomi stĺpcami
-row1_col1, row1_col2 = st.columns([1, 5])
+row1_col1, row1_col2 = st.columns([1, 6])
 
 with row1_col1:
-    image = Image.open("data/strazovske_vrchy.gif") 
+    image = Image.open("data/strazovske_vrchy.png") 
     st.image(image, use_column_width=False)
     
-    
 with row1_col2:
-    st.title("Rozšírený Streamlit Dashboard")
-    st.write("Toto je popis dashboardu.")
+    st.title("Chránená krajinná oblasť Strážovské vrchy")
+    st.write("### Analýza vlastníckych vzťahov")
 
 # Vytvorenie skrytých premenných na pripojenie do databázy
 host = st.secrets["db_host"]
@@ -59,11 +58,11 @@ def load_data():
 tab, gdf = load_data()
 
 # Rozdelenie na tri stĺpce
-col1, col2, col3 = st.columns([2, 1, 1])  # Pomery stĺpcov, 2:1:1 (ľavý:pravy:legendový)
+col1, col2, col3 = st.columns([2, 3, 2])  # Pomery stĺpcov, 3:2:1 (ľavý:pravy:legendový)
 
 # Tabuľka na ľavej strane
 with col1:
-    st.subheader("Tabuľka údajov")
+    #st.subheader("Tabuľka údajov")
     st.dataframe(tab)
 
 # Mapa na pravej strane
@@ -135,5 +134,10 @@ with col3:
     
     # Pridanie legendy do Streamlit ako HTML
     st.markdown(legend_html, unsafe_allow_html=True)
+
+row1_col3, row1_col2 = st.columns([1,1])
+with row1_col3:
+    image = Image.open("data/strazovske_vrchy.png") 
+    st.image(image, use_column_width=True)
 
 st.write("Došiel som sem.")
