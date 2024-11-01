@@ -31,6 +31,7 @@ database = st.secrets["db_database"]
 user = st.secrets["db_user"]
 password = st.secrets["db_password"]
 
+@st.cache_resource #dekorátor pripojenia na databázové zdroje
 # Funkcia na vytvorenie databázového spojenia
 def get_db_connection():
     db_connection_url = f"postgresql://{user}:{password}@{host}:{port}/{database}"
@@ -99,6 +100,7 @@ with row2_col1:
     # Preformátovanie hodnôt v pivot tabuľke
     # Zmena oddelovača tisícok na medzeru a zaokrúhlenie na 2 desatinné miesta
     pivot_table = pivot_table.applymap(lambda x: f"{x:,.2f}".replace(',', ' ').replace('.', ','))
+    
     # Priradenie aliasov stĺpcom
     pivot_table.rename(columns=aliases, inplace=True)
 
