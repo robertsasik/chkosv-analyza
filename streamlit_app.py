@@ -115,24 +115,22 @@ with row2_col1:
 
 with row2_col2:
     st.write("Tu budu grafy")
-    #st.table(tab)
     data = pd.DataFrame(tab)
+    
     # Farby pre jednotlivé segmenty
     custom_colors = ["#7d3c98", "#2980b9", "#e74c3c", "#935116", "#28b463", "#f1c40f"]
 
     # Vytvorenie koláčového grafu s dierou (donut graf)
     fig = px.pie(data, 
-                names='Forma vlastníctva', 
-                values='Celková plocha (ha)', 
-                title='Donut graf s vlastnými farbami',
-                color_discrete_sequence=custom_colors,
-                hole=0.4)  # Parameter hole nastavuje veľkosť diery
+                 names='Forma vlastníctva', 
+                 values='Celková plocha (ha)', 
+                 title='Donut graf s vlastnými farbami',
+                 color_discrete_sequence=custom_colors,
+                 hole=0.4)  # Parameter hole nastavuje veľkosť diery
 
-    # Zobrazenie grafu
-    fig.show()
-
-
-    
+    # Zobrazenie grafu v Streamlit s prispôsobením šírky
+    st.plotly_chart(fig, use_container_width=True)
+   
 
 ########################### koniec - druhý riadok a dva stĺpce ###########################
 st.write("---")
