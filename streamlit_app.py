@@ -66,13 +66,14 @@ def load_data():
 tab, gdf, tab_kon = load_data()
 
 #Definovanie farebnej mapy pre jednotlivé formy vlastníctva
+
 ownership_colors = {
-        "štátne": "#28b463",
-        "miest, obcí, samosprávneho kraja": "#2980b9",
-        "súkromné": "#935116",
-        "spoločenstvenné": "#e74c3c",
-        "cirkevné": "#7d3c98",
-        "nezistené": "#f1c40f"
+    "cirkevné": "#7d3c98",
+    "miest, obcí, samosprávneho kraja": "#2980b9",
+    "spoločenstvenné": "#e74c3c",
+    "súkromné": "#935116",
+    "štátne": "#28b463",
+    "nezistené": "#f1c40f"        
     }
 
 ######################### dashboard - druhý riadok a dva stĺpce #########################
