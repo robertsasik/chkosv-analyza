@@ -68,9 +68,10 @@ tab, gdf, tab_kon = load_data()
 #Definovanie farebnej mapy pre jednotlivé formy vlastníctva
 
 ownership_colors = {
+    "spoločenstvenné": "#e74c3c",
     "cirkevné": "#7d3c98",
     "miest, obcí, samosprávneho kraja": "#2980b9",
-    "spoločenstvenné": "#e74c3c",
+    
     "súkromné": "#935116",
     "štátne": "#28b463",
     "nezistené": "#f1c40f"        
@@ -129,7 +130,7 @@ with row2_col2:
     data = pd.DataFrame(tab)
     
     # Farby pre jednotlivé segmenty
-    
+
     # Vytvorenie koláčového grafu s dierou (donut graf)
     fig = px.pie(data, 
                  names='Forma vlastníctva', 
@@ -143,6 +144,7 @@ with row2_col2:
     st.plotly_chart(fig, use_container_width=True)
 
     st.dataframe(data)
+    #fig.show()
    
 
 ########################### koniec - druhý riadok a dva stĺpce ###########################
