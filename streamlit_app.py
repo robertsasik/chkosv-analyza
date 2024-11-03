@@ -65,6 +65,16 @@ def load_data():
 # Načítanie údajov
 tab, gdf, tab_kon = load_data()
 
+#Definovanie farebnej mapy pre jednotlivé formy vlastníctva
+ownership_colors = {
+        "štátne": "#28b463",
+        "miest, obcí, samosprávneho kraja": "#2980b9",
+        "súkromné": "#935116",
+        "spoločenstvenné": "#e74c3c",
+        "cirkevné": "#7d3c98",
+        "nezistené": "#f1c40f"
+    }
+
 ######################### dashboard - druhý riadok a dva stĺpce #########################
 
 row2_col1, row2_col2, = st.columns([5, 2])  # Pomery stĺpcov, 5:2(ľavý:pravy)
@@ -118,18 +128,20 @@ with row2_col2:
     data = pd.DataFrame(tab)
     
     # Farby pre jednotlivé segmenty
-    custom_colors = ["#7d3c98", "#2980b9", "#e74c3c", "#935116", "#28b463", "#f1c40f"]
-
+    
     # Vytvorenie koláčového grafu s dierou (donut graf)
     fig = px.pie(data, 
                  names='Forma vlastníctva', 
                  values='Celková plocha (ha)', 
-                 title='Donut graf s vlastnými farbami',
-                 color_discrete_sequence=custom_colors,
+                 title='',
+                 color_discrete_map=ownership_colors,
+                 #color_discrete_sequence=list(ownership_colors.values()),
                  hole=0.4)  # Parameter hole nastavuje veľkosť diery
 
     # Zobrazenie grafu v Streamlit s prispôsobením šírky
     st.plotly_chart(fig, use_container_width=True)
+
+    st.dataframe(data)
    
 
 ########################### koniec - druhý riadok a dva stĺpce ###########################
@@ -143,14 +155,7 @@ row3_col1, row3_col2, row3_col3 = st.columns([6, 1, 2])  # Pomery stĺpcov, 5:2(
 with row3_col1:
     st.markdown('<div class="flexible-height-col">', unsafe_allow_html=True)  # Začiatok divu s flexibilnou výškou
     # Definovanie farebnej mapy pre jednotlivé formy vlastníctva
-    ownership_colors = {
-        "štátne": "#28b463",
-        "miest, obcí, samosprávneho kraja": "#2980b9",
-        "súkromné": "#935116",
-        "spoločenstvenné": "#e74c3c",
-        "cirkevné": "#7d3c98",
-        "nezistené": "#f1c40f"
-    }
+    ######ownership_colors########
 
     # Deklarácia štýlovej funkcie s farbami podľa formy vlastníctva
     def style_function(feature):
@@ -187,35 +192,36 @@ with row3_col1:
 # Legenda v strednom stlpci
 with row3_col2:
     st.markdown('<div class="flexible-height-col">', unsafe_allow_html=True)  # Začiatok divu s flexibilnou výškou
-    legend_html = """
+    legend_html = f"""
     <div style="background: white; padding: 0px; font-size: 12px;">
         <h6 style="margin: 0;">Forma vlastníctva</h6>
         <div style="display: flex; align-items: center;">
-            <div style="background-color: #28b463; width: 20px; height: 20px; margin-right: 5px; opacity: 0.5;"></div>
+            <div style="background-color: {ownership_colors['štátne']}; width: 20px; height: 20px; margin-right: 5px; opacity: 0.5;"></div>
             <span>Štátne</span>
         </div>
         <div style="display: flex; align-items: center;">
-            <div style="background-color: #2980b9; width: 20px; height: 20px; margin-right: 5px; opacity: 0.5;"></div>
+            <div style="background-color: {ownership_colors['miest, obcí, samosprávneho kraja']}; width: 20px; height: 20px; margin-right: 5px; opacity: 0.5;"></div>
             <span>Miest, obcí, samosprávneho kraja</span>
         </div>
         <div style="display: flex; align-items: center;">
-            <div style="background-color: #935116; width: 20px; height: 20px; margin-right: 5px; opacity: 0.5;"></div>
+            <div style="background-color: {ownership_colors['súkromné']}; width: 20px; height: 20px; margin-right: 5px; opacity: 0.5;"></div>
             <span>Súkromné</span>
         </div>
         <div style="display: flex; align-items: center;">
-            <div style="background-color: #e74c3c; width: 20px; height: 20px; margin-right: 5px; opacity: 0.5;"></div>
+            <div style="background-color: {ownership_colors['spoločenstvenné']}; width: 20px; height: 20px; margin-right: 5px; opacity: 0.5;"></div>
             <span>Spoločenstvenné</span>
         </div>
         <div style="display: flex; align-items: center;">
-            <div style="background-color: #7d3c98; width: 20px; height: 20px; margin-right: 5px; opacity: 0.5;"></div>
+            <div style="background-color: {ownership_colors['cirkevné']}; width: 20px; height: 20px; margin-right: 5px; opacity: 0.5;"></div>
             <span>Cirkevné</span>
         </div>
         <div style="display: flex; align-items: center;">
-            <div style="background-color: #f1c40f; width: 20px; height: 20px; margin-right: 5px; opacity: 0.5;"></div>
+            <div style="background-color: {ownership_colors['nezistené']}; width: 20px; height: 20px; margin-right: 5px; opacity: 0.5;"></div>
             <span>Nezistené</span>
         </div>
     </div>
-    """
+"""
+
     
     # Pridanie legendy do Streamlit ako HTML
     st.markdown(legend_html, unsafe_allow_html=True)
