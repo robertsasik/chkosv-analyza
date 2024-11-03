@@ -5,6 +5,7 @@ import folium
 from sqlalchemy import create_engine
 from streamlit_folium import st_folium
 from PIL import Image
+import plotly.express as px
 
 # Nastavenie layoutu na celú šírku stránky
 st.set_page_config(layout="wide")
@@ -25,6 +26,7 @@ with row1_col2:
 st.write("---")
 
 # Vytvorenie skrytých premenných na pripojenie do databázy
+host = st.secrets["db_host"]
 host = st.secrets["db_host"]
 port = int(st.secrets["db_port"])
 database = st.secrets["db_database"]
@@ -113,6 +115,24 @@ with row2_col1:
 
 with row2_col2:
     st.write("Tu budu grafy")
+    #st.table(tab)
+    data = pd.DataFrame(tab)
+    # Farby pre jednotlivé segmenty
+    custom_colors = ["#7d3c98", "#2980b9", "#e74c3c", "#935116", "#28b463", "#f1c40f"]
+
+    # Vytvorenie koláčového grafu s dierou (donut graf)
+    fig = px.pie(data, 
+                names='Forma vlastníctva', 
+                values='Celková plocha (ha)', 
+                title='Donut graf s vlastnými farbami',
+                color_discrete_sequence=custom_colors,
+                hole=0.4)  # Parameter hole nastavuje veľkosť diery
+
+    # Zobrazenie grafu
+    fig.show()
+
+
+    
 
 ########################### koniec - druhý riadok a dva stĺpce ###########################
 st.write("---")
