@@ -82,7 +82,7 @@ ownership_colors = {
 row2_col1, row2_col2, = st.columns([6, 3])  # Pomery stĺpcov, 5:2(ľavý:pravy)
 with row2_col1:
     
-    st.write("Tab.: vlastnícke vzťahy podľa kategórií")
+    st.write("###### Tab.: výmery pozemkov v ha podľa formy vlastníctva a druhu pozemkov")
     
     # Vytvorenie pivot tabuľky so špecifikovanými názvami stĺpcov
     pivot_table = pd.pivot_table(
@@ -125,9 +125,9 @@ with row2_col2:
     data = pd.DataFrame(tab)
     
     # Vytvorenie rolovacieho menu pre výber typu grafu
-    chart_type = st.selectbox("",["Percentuálny podiel pozemkov podľa formy vlastníctva", "Plocha pozemkov podľa formy vlastníctva"])
+    chart_type = st.selectbox("",["Percentuálny podiel výmer pozemkov podľa formy vlastníctva", "Výmery pozemkov podľa formy vlastníctva"])
 
-    if chart_type == "Percentuálny podiel pozemkov podľa formy vlastníctva":
+    if chart_type == "Percentuálny podiel výmer pozemkov podľa formy vlastníctva":
         
         # Vytvorenie koláčového grafu s dierou (donut graf)
         fig = go.Figure(data=[go.Pie(
@@ -150,7 +150,7 @@ with row2_col2:
         # Zobrazenie grafu v Streamlit s prispôsobením šírky
         st.plotly_chart(fig, use_container_width=True)
 
-    elif chart_type == "Plocha pozemkov podľa formy vlastníctva":
+    elif chart_type == "Výmery pozemkov podľa formy vlastníctva":
        
         # Usporiadanie dát od najväčšej po najmenšiu hodnotu
         data_sorted = data.sort_values(by="Celková plocha (ha)", ascending=False)
