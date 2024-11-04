@@ -186,14 +186,7 @@ with row2_col2:
 
 ########################### koniec - druhý riadok a dva stĺpce ##########################
 
-######################### dashboard - tretí riadok a tri stĺpce #########################
-# Rozdelenie na tri stĺpce s pevnou výškou
-row3_col1, row3_col2, row3_col3 = st.columns([6, 1, 2])  # Pomery stĺpcov
-#####################################################################################################################################################
-# Mapa na pravej strane
-with row3_col1:
-
-    legend_html = f"""
+legend_html = f"""
     <div style="background: white; padding: 0px; font-size: 12px;">
         <h6 style="margin: 0;">Forma vlastníctva</h6>
         <div style="display: flex; align-items: center;">
@@ -223,14 +216,14 @@ with row3_col1:
     </div>
 """
    
-    # Pridanie legendy do Streamlit ako HTML
-    st.markdown(legend_html, unsafe_allow_html=True)
+# Pridanie legendy do Streamlit ako HTML
+st.markdown(legend_html, unsafe_allow_html=True)
 
-    # Deklarácia štýlovej funkcie s farbami podľa formy vlastníctva
-    def style_function(feature):
-        ownership_type = feature['properties'].get("Forma vlastníctva", "nezistené")
-        color = ownership_colors.get(ownership_type, "#f1c40f")  # Default farba pre 'nezistené'
-        return {
+# Deklarácia štýlovej funkcie s farbami podľa formy vlastníctva
+def style_function(feature):
+    ownership_type = feature['properties'].get("Forma vlastníctva", "nezistené")
+    color = ownership_colors.get(ownership_type, "#f1c40f")  # Default farba pre 'nezistené'
+    return {
             'fillColor': color,
             'color': 'black',
             'weight': 0.1,  # Nastavenie hrúbky obrysu
@@ -238,29 +231,20 @@ with row3_col1:
             'opacity': 0.6  # Priehľadnosť obrysu
         }
     # Vytvorenie interaktívnej mapy
-    m = folium.Map(location=[49.04519085530501, 18.45598270193193], zoom_start=11)
+m = folium.Map(location=[49.04519085530501, 18.45598270193193], zoom_start=11)
     
-    # Pridanie GeoDataFrame vrstvy na mapu so zvoleným štýlom
-    folium.GeoJson(gdf, style_function=style_function, name = "Forma vlastnictva").add_to(m)
+# Pridanie GeoDataFrame vrstvy na mapu so zvoleným štýlom
+folium.GeoJson(gdf, style_function=style_function, name = "Forma vlastnictva").add_to(m)
     
-    # Pridanie rôznych basemáp
-    folium.TileLayer("Esri.WorldTopoMap", name="Esri Topo Map").add_to(m)
-    folium.TileLayer("Esri.WorldShadedRelief", name="Esri Shaded Relief").add_to(m)
-    folium.TileLayer("OpenTopoMap", name="OpenTopo Map").add_to(m)
+# Pridanie rôznych basemáp
+folium.TileLayer("Esri.WorldTopoMap", name="Esri Topo Map").add_to(m)
+folium.TileLayer("Esri.WorldShadedRelief", name="Esri Shaded Relief").add_to(m)
+folium.TileLayer("OpenTopoMap", name="OpenTopo Map").add_to(m)
 
-    # Pridanie prepínača na ovládanie vrstiev
-    folium.LayerControl().add_to(m)
+# Pridanie prepínača na ovládanie vrstiev
+folium.LayerControl().add_to(m)
     
-    # Zobrazenie interaktívnej mapy v Streamlit
-    st_folium(m, width=1100, height=780)  # Nastavenie šírky a výšky mapy
-   
-# Legenda v strednom stlpci
-#with row3_col2:
-    #st.write("Treti riadok, druhy stlpec.") 
+# Zobrazenie interaktívnej mapy v Streamlit
+st_folium(m, width=None, height=780)  # Nastavenie šírky a výšky mapy
 
-#with row3_col3:
-    #st.write("Treti riadok, treti stlpec.")
-
-########################### koniec - tretí riadok a tri stĺpce ###########################
-st.write("---")
 
