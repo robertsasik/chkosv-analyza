@@ -185,39 +185,45 @@ with row2_col2:
 
 
 ########################### koniec - druhý riadok a dva stĺpce ##########################
-
 legend_html = f"""
-    <div style="background: white; padding: 0px; font-size: 12px;">
-        <h6 style="margin: 0;">Forma vlastníctva</h6>
-        <div style="display: flex; align-items: center;">
-            <div style="background-color: {ownership_colors["štátne"]}; width: 20px; height: 20px; margin-right: 5px; opacity: 0.5;"></div>
-            <span>Štátne</span>
-        </div>
-        <div style="display: flex; align-items: center;">
-            <div style="background-color: {ownership_colors["miest, obcí, samosprávneho kraja"]}; width: 20px; height: 20px; margin-right: 5px; opacity: 0.5;"></div>
-            <span>Miest, obcí, samosprávneho kraja</span>
-        </div>
-        <div style="display: flex; align-items: center;">
-            <div style="background-color: {ownership_colors["súkromné"]}; width: 20px; height: 20px; margin-right: 5px; opacity: 0.5;"></div>
-            <span>Súkromné</span>
-        </div>
-        <div style="display: flex; align-items: center;">
-            <div style="background-color: {ownership_colors["spoločenstvenné"]}; width: 20px; height: 20px; margin-right: 5px; opacity: 0.5;"></div>
-            <span>Spoločenstvenné</span>
-        </div>
-        <div style="display: flex; align-items: center;">
-            <div style="background-color: {ownership_colors["cirkevné"]}; width: 20px; height: 20px; margin-right: 5px; opacity: 0.5;"></div>
-            <span>Cirkevné</span>
-        </div>
-        <div style="display: flex; align-items: center;">
-            <div style="background-color: {ownership_colors["nezistené"]}; width: 20px; height: 20px; margin-right: 5px; opacity: 0.5;"></div>
-            <span>Nezistené</span>
+    <div style="background: white; padding: 0px; font-size: 14px;">
+        <h6 style="margin: 0;">Legenda</h6>
+        <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+            <div style="display: inline-flex; align-items: center; margin-right: 10px;">
+                <div style="background-color: {ownership_colors["štátne"]}; width: 20px; height: 20px; margin-right: 5px; opacity: 0.5;"></div>
+                <span>Štátne</span>
+            </div>
+            <div style="display: inline-flex; align-items: center; margin-right: 10px;">
+                <div style="background-color: {ownership_colors["miest, obcí, samosprávneho kraja"]}; width: 20px; height: 20px; margin-right: 5px; opacity: 0.5;"></div>
+                <span>Miest, obcí, samosprávneho kraja</span>
+            </div>
+            <div style="display: inline-flex; align-items: center; margin-right: 10px;">
+                <div style="background-color: {ownership_colors["súkromné"]}; width: 20px; height: 20px; margin-right: 5px; opacity: 0.5;"></div>
+                <span>Súkromné</span>
+            </div>
+            <div style="display: inline-flex; align-items: center; margin-right: 10px;">
+                <div style="background-color: {ownership_colors["spoločenstvenné"]}; width: 20px; height: 20px; margin-right: 5px; opacity: 0.5;"></div>
+                <span>Spoločenstvenné</span>
+            </div>
+            <div style="display: inline-flex; align-items: center; margin-right: 10px;">
+                <div style="background-color: {ownership_colors["cirkevné"]}; width: 20px; height: 20px; margin-right: 5px; opacity: 0.5;"></div>
+                <span>Cirkevné</span>
+            </div>
+            <div style="display: inline-flex; align-items: center; margin-right: 10px;">
+                <div style="background-color: {ownership_colors["nezistené"]}; width: 20px; height: 20px; margin-right: 5px; opacity: 0.5;"></div>
+                <span>Nezistené</span>
+            </div>
         </div>
     </div>
+    <br>
 """
    
 # Pridanie legendy do Streamlit ako HTML
 st.markdown(legend_html, unsafe_allow_html=True)
+
+#st.write(f"Mapa vlastníckych vzťahov na území CHKO Strážovské vrchy: {legenda}")
+
+
 
 # Deklarácia štýlovej funkcie s farbami podľa formy vlastníctva
 def style_function(feature):
@@ -237,14 +243,16 @@ m = folium.Map(location=[49.04519085530501, 18.45598270193193], zoom_start=11)
 folium.GeoJson(gdf, style_function=style_function, name = "Forma vlastnictva").add_to(m)
     
 # Pridanie rôznych basemáp
-folium.TileLayer("Esri.WorldTopoMap", name="Esri Topo Map").add_to(m)
 folium.TileLayer("Esri.WorldShadedRelief", name="Esri Shaded Relief").add_to(m)
 folium.TileLayer("OpenTopoMap", name="OpenTopo Map").add_to(m)
+folium.TileLayer("Esri.WorldTopoMap", name="Esri Topo Map").add_to(m)
 
 # Pridanie prepínača na ovládanie vrstiev
 folium.LayerControl().add_to(m)
     
 # Zobrazenie interaktívnej mapy v Streamlit
 st_folium(m, width=None, height=780)  # Nastavenie šírky a výšky mapy
+
+
 
 
