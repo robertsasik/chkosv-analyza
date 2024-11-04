@@ -7,7 +7,6 @@ from streamlit_folium import st_folium
 from PIL import Image
 import plotly.graph_objects as go
 
-
 # Nastavenie layoutu na celú šírku stránky
 st.set_page_config(layout="wide")
 
