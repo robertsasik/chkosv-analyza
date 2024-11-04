@@ -5,7 +5,6 @@ import folium
 from sqlalchemy import create_engine
 from streamlit_folium import st_folium
 from PIL import Image
-import plotly.express as px
 import plotly.graph_objects as go
 
 
@@ -75,7 +74,7 @@ ownership_colors = {
     "spoločenstvenné": "#e74c3c", #"spoločenstvenné"
     "súkromné": "#935116", #"súkromné"
     "štátne": "#28b463", #"štátne"
-    "nezistené": "#f1c40f" #"nezistené"       
+    "nezistené": "#f1c40f", #"nezistené"       
     }
 
 ######################### dashboard - druhý riadok a dva stĺpce #########################
@@ -83,7 +82,7 @@ ownership_colors = {
 row2_col1, row2_col2, = st.columns([6, 3])  # Pomery stĺpcov, 5:2(ľavý:pravy)
 with row2_col1:
     
-    st.write("#### Vlastnícke vzťahy podľa kategórií")
+    st.write("Tab.: vlastnícke vzťahy podľa kategórií")
     
     # Vytvorenie pivot tabuľky so špecifikovanými názvami stĺpcov
     pivot_table = pd.pivot_table(
@@ -119,16 +118,17 @@ with row2_col1:
 
     # Zobrazenie tabuľky v Streamlit
     st.dataframe(pivot_table, use_container_width=True)  # Prispôsobenie šírky tabuľky
-
+    
 
 with row2_col2:
     
     data = pd.DataFrame(tab)
     
     # Vytvorenie rolovacieho menu pre výber typu grafu
-    chart_type = st.selectbox("Vyberte typ grafu:", ["Koláčový graf", "Stĺpcový graf"])
+    chart_type = st.selectbox("",["Percentuálny podiel pozemkov podľa formy vlastníctva", "Plocha pozemkov podľa formy vlastníctva"])
 
-    if chart_type == "Koláčový graf":
+    if chart_type == "Percentuálny podiel pozemkov podľa formy vlastníctva":
+        
         # Vytvorenie koláčového grafu s dierou (donut graf)
         fig = go.Figure(data=[go.Pie(
             labels=data["Forma vlastníctva"],
@@ -145,12 +145,13 @@ with row2_col2:
         )])
 
         # Pridanie názvu grafu
-        fig.update_layout(title_text="Percentuálny podiel vlastníckych vzťahov")
+        fig.update_layout()
 
         # Zobrazenie grafu v Streamlit s prispôsobením šírky
         st.plotly_chart(fig, use_container_width=True)
 
-    elif chart_type == "Stĺpcový graf":
+    elif chart_type == "Plocha pozemkov podľa formy vlastníctva":
+       
         # Usporiadanie dát od najväčšej po najmenšiu hodnotu
         data_sorted = data.sort_values(by="Celková plocha (ha)", ascending=False)
 
@@ -166,15 +167,15 @@ with row2_col2:
                         ownership_colors["štátne"],
                         ownership_colors["miest, obcí, samosprávneho kraja"],
                         ownership_colors["cirkevné"],
-                        ownership_colors["nezistené"][:len(data_sorted)]  # Zabezpečiť, že farby sú v rozsahu
-                    ]
+                        ownership_colors["nezistené"]  
+                    ][:len(data_sorted)] # Zabezpečiť, že farby sú v rozsahu
                 )
             )
         ])
 
         # Pridanie názvu grafu a popisov osí
         fig.update_layout(
-            title_text="Percentuálny podiel vlastníckych vzťahov",
+            #title_text="Percentuálny podiel vlastníckych vzťahov",
             xaxis_title="Forma vlastníctva",
             yaxis_title="Celková plocha (ha)",
         )
@@ -254,11 +255,11 @@ with row3_col1:
     st_folium(m, width=1100, height=780)  # Nastavenie šírky a výšky mapy
    
 # Legenda v strednom stlpci
-with row3_col2:
-    st.write("Treti riadok, druhy stlpec.") 
+#with row3_col2:
+    #st.write("Treti riadok, druhy stlpec.") 
 
-with row3_col3:
-    st.write("Treti riadok, treti stlpec.")
+#with row3_col3:
+    #st.write("Treti riadok, treti stlpec.")
 
 ########################### koniec - tretí riadok a tri stĺpce ###########################
 st.write("---")
