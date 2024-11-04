@@ -252,7 +252,3 @@ folium.LayerControl().add_to(m)
     
 # Zobrazenie interaktívnej mapy v Streamlit
 st_folium(m, width=None, height=780)  # Nastavenie šírky a výšky mapy
-
-
-
-
