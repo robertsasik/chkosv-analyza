@@ -41,7 +41,7 @@ def get_db_connection():
     return engine
 
 # SQL dopyty pre jednotlivé tabuľky
-sql_vlastnictvo = "SELECT * FROM vztahy_vlastnictvo;"
+sql_vlastnictvo = "SELECT * FROM vztahy_vlastnictvo1;"
 sql_mapa = "SELECT * FROM mapa_vlastnictvo_zl;"
 sql_drp =  "SELECT * FROM mapa_vlastnictvo_drp1;"
 
@@ -130,9 +130,10 @@ with row2_col2:
     
     if chart_type == "Percentuálny podiel výmer pozemkov podľa formy vlastníctva":
         
+        
         # Vytvorenie koláčového grafu s dierou (donut graf)
         fig = go.Figure(data=[go.Pie(
-            labels=data["Forma vlastníctva"],
+            labels=data["Forma vlastníctva"].tolist(),
             values=data["Celková plocha (ha)"],
             hole=0.4,
             marker=dict(colors=[
@@ -141,7 +142,7 @@ with row2_col2:
                 ownership_colors["spoločenstvenné"],
                 ownership_colors["súkromné"],
                 ownership_colors["štátne"],
-                ownership_colors["nezistené"]
+                #ownership_colors["nezistené"]
             ])
         )])
 
@@ -163,12 +164,12 @@ with row2_col2:
                 y=data_sorted["Celková plocha (ha)"],  # Na osi Y sú hodnoty
                 marker=dict(
                     color=[
-                        ownership_colors["spoločenstvenné"],
                         ownership_colors["súkromné"],
                         ownership_colors["štátne"],
+                        ownership_colors["spoločenstvenné"],
                         ownership_colors["miest, obcí, samosprávneho kraja"],
                         ownership_colors["cirkevné"],
-                        ownership_colors["nezistené"]  
+                        #ownership_colors["nezistené"]  
                     ][:len(data_sorted)] # Zabezpečiť, že farby sú v rozsahu
                 )
             )
@@ -185,36 +186,36 @@ with row2_col2:
         st.plotly_chart(fig, use_container_width=True)
 
 
-########################### koniec - druhý riadok a dva stĺpce ##########################
+########################### koniec - druhý riadok a dva stĺpce ##########################  {ownership_colors["miest, obcí, samosprávneho kraja"]}
 color_transp = 1 #Hodnoty 0-1
 legend_html = f"""
     <div style="background: transparent; padding: 0px; font-size: 14px;">
         <h6 style="margin: 0;">Mapa - zobrazenie pozemkov podľa formy vlastníctva</h6>
         <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
             <div style="display: inline-flex; align-items: center; margin-right: 10px;">
-                <div style="background-color: {ownership_colors["spoločenstvenné"]}; width: 20px; height: 20px; margin-right: 5px; opacity: {color_transp};"></div>
-                <span>Spoločenstvenné</span>            
-            </div>
-            <div style="display: inline-flex; align-items: center; margin-right: 10px;">
                 <div style="background-color: {ownership_colors["súkromné"]}; width: 20px; height: 20px; margin-right: 5px; opacity: {color_transp};"></div>
-                <span>Súkromné</span>    
+                <span>súkromné</span>            
             </div>
             <div style="display: inline-flex; align-items: center; margin-right: 10px;">
                 <div style="background-color: {ownership_colors["štátne"]}; width: 20px; height: 20px; margin-right: 5px; opacity: {color_transp};"></div>
-                <span>Štátne</span>
+                <span>štátne</span>    
+            </div>
+            <div style="display: inline-flex; align-items: center; margin-right: 10px;">
+                <div style="background-color: {ownership_colors["spoločenstvenné"]}; width: 20px; height: 20px; margin-right: 5px; opacity: {color_transp};"></div>
+                <span>spoločenstvenné</span>
             </div>
             <div style="display: inline-flex; align-items: center; margin-right: 10px;">
                 <div style="background-color: {ownership_colors["miest, obcí, samosprávneho kraja"]}; width: 20px; height: 20px; margin-right: 5px; opacity: {color_transp};"></div>
-                <span>Miest, obcí, samosprávneho kraja</span>
+                <span>miest, obcí, samosprávneho kraja</span>
             </div>
             <div style="display: inline-flex; align-items: center; margin-right: 10px;">
                 <div style="background-color: {ownership_colors["cirkevné"]}; width: 20px; height: 20px; margin-right: 5px; opacity: {color_transp};"></div>
-                <span>Cirkevné</span>
+                <span>cirkevné</span>
             </div>
-            <div style="display: inline-flex; align-items: center; margin-right: 10px;">
+            <!--<div style="display: inline-flex; align-items: center; margin-right: 10px;">
                 <div style="background-color: {ownership_colors["nezistené"]}; width: 20px; height: 20px; margin-right: 5px; opacity: {color_transp};"></div>
                 <span>Nezistené</span>
-            </div>
+            </div>-->
         </div>
     </div>
     <br>
@@ -222,6 +223,7 @@ legend_html = f"""
    
 # Pridanie legendy do Streamlit ako HTML
 st.markdown(legend_html, unsafe_allow_html=True)
+
 
 # Deklarácia štýlovej funkcie s farbami podľa formy vlastníctva
 def style_function(feature):
