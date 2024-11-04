@@ -7,7 +7,7 @@ from streamlit_folium import st_folium
 from PIL import Image
 import plotly.express as px
 import plotly.graph_objects as go
-from folium import Map, Element, LayerControl, GeoJson
+
 
 # Nastavenie layoutu na celú šírku stránky
 st.set_page_config(layout="wide")
@@ -187,12 +187,12 @@ with row2_col2:
 
 ######################### dashboard - tretí riadok a tri stĺpce #########################
 # Rozdelenie na tri stĺpce s pevnou výškou
-row3_col1, row3_col2, row3_col3 = st.columns([6, 1, 2])  # Pomery stĺpcov, 5:2(ľavý:pravy)
+row3_col1, row3_col2, row3_col3 = st.columns([6, 1, 2])  # Pomery stĺpcov
 #####################################################################################################################################################
 # Mapa na pravej strane
 with row3_col1:
 
-    legend_html1 = f"""
+    legend_html = f"""
     <div style="background: white; padding: 0px; font-size: 12px;">
         <h6 style="margin: 0;">Forma vlastníctva</h6>
         <div style="display: flex; align-items: center;">
@@ -223,7 +223,7 @@ with row3_col1:
 """
    
     # Pridanie legendy do Streamlit ako HTML
-    st.markdown(legend_html1, unsafe_allow_html=True)
+    st.markdown(legend_html, unsafe_allow_html=True)
 
     # Deklarácia štýlovej funkcie s farbami podľa formy vlastníctva
     def style_function(feature):
@@ -261,6 +261,5 @@ with row3_col3:
     st.write("Treti riadok, treti stlpec.")
 
 ########################### koniec - tretí riadok a tri stĺpce ###########################
-
 st.write("---")
 
