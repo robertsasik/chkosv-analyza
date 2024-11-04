@@ -82,7 +82,7 @@ ownership_colors = {
 row2_col1, row2_col2, = st.columns([6, 3])  # Pomery stĺpcov, 5:2(ľavý:pravy)
 with row2_col1:
     
-    st.write("###### Tab.: výmery pozemkov v ha podľa formy vlastníctva a druhu pozemkov")
+    st.write("###### Tabuľka - výmery pozemkov v ha podľa formy vlastníctva a druhu pozemkov")
     
     # Vytvorenie pivot tabuľky so špecifikovanými názvami stĺpcov
     pivot_table = pd.pivot_table(
@@ -118,15 +118,17 @@ with row2_col1:
 
     # Zobrazenie tabuľky v Streamlit
     st.dataframe(pivot_table, use_container_width=True)  # Prispôsobenie šírky tabuľky
-    
+    st.write("\n")
+    st.write("###### Graf - vyberte si graf na zobrazenie")
+
+    # Vytvorenie rolovacieho menu pre výber typu grafu
+    chart_type = st.selectbox("",["Percentuálny podiel výmer pozemkov podľa formy vlastníctva", "Výmery pozemkov podľa formy vlastníctva"])
+
 
 with row2_col2:
     
     data = pd.DataFrame(tab)
     
-    # Vytvorenie rolovacieho menu pre výber typu grafu
-    chart_type = st.selectbox("",["Percentuálny podiel výmer pozemkov podľa formy vlastníctva", "Výmery pozemkov podľa formy vlastníctva"])
-
     if chart_type == "Percentuálny podiel výmer pozemkov podľa formy vlastníctva":
         
         # Vytvorenie koláčového grafu s dierou (donut graf)
@@ -145,7 +147,7 @@ with row2_col2:
         )])
 
         # Pridanie názvu grafu
-        fig.update_layout()
+        fig.update_layout(title_text= "Percentuálny podiel výmer pozemkov podľa formy vlastníctva")
 
         # Zobrazenie grafu v Streamlit s prispôsobením šírky
         st.plotly_chart(fig, use_container_width=True)
@@ -175,7 +177,7 @@ with row2_col2:
 
         # Pridanie názvu grafu a popisov osí
         fig.update_layout(
-            #title_text="Percentuálny podiel vlastníckych vzťahov",
+            title_text= "Výmery pozemkov podľa formy vlastníctva",
             xaxis_title="Forma vlastníctva",
             yaxis_title="Celková plocha (ha)",
         )
@@ -185,32 +187,33 @@ with row2_col2:
 
 
 ########################### koniec - druhý riadok a dva stĺpce ##########################
+color_transp = 1 #Hodnoty 0-1
 legend_html = f"""
-    <div style="background: white; padding: 0px; font-size: 14px;">
-        <h6 style="margin: 0;">Legenda</h6>
+    <div style="background: transparent; padding: 0px; font-size: 14px;">
+        <h6 style="margin: 0;">Mapa - zobrazenie pozemkov podľa formy vlastníctva</h6>
         <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
             <div style="display: inline-flex; align-items: center; margin-right: 10px;">
-                <div style="background-color: {ownership_colors["štátne"]}; width: 20px; height: 20px; margin-right: 5px; opacity: 0.5;"></div>
+                <div style="background-color: {ownership_colors["spoločenstvenné"]}; width: 20px; height: 20px; margin-right: 5px; opacity: {color_transp};"></div>
+                <span>Spoločenstvenné</span>            
+            </div>
+            <div style="display: inline-flex; align-items: center; margin-right: 10px;">
+                <div style="background-color: {ownership_colors["súkromné"]}; width: 20px; height: 20px; margin-right: 5px; opacity: {color_transp};"></div>
+                <span>Súkromné</span>    
+            </div>
+            <div style="display: inline-flex; align-items: center; margin-right: 10px;">
+                <div style="background-color: {ownership_colors["štátne"]}; width: 20px; height: 20px; margin-right: 5px; opacity: {color_transp};"></div>
                 <span>Štátne</span>
             </div>
             <div style="display: inline-flex; align-items: center; margin-right: 10px;">
-                <div style="background-color: {ownership_colors["miest, obcí, samosprávneho kraja"]}; width: 20px; height: 20px; margin-right: 5px; opacity: 0.5;"></div>
+                <div style="background-color: {ownership_colors["miest, obcí, samosprávneho kraja"]}; width: 20px; height: 20px; margin-right: 5px; opacity: {color_transp};"></div>
                 <span>Miest, obcí, samosprávneho kraja</span>
             </div>
             <div style="display: inline-flex; align-items: center; margin-right: 10px;">
-                <div style="background-color: {ownership_colors["súkromné"]}; width: 20px; height: 20px; margin-right: 5px; opacity: 0.5;"></div>
-                <span>Súkromné</span>
-            </div>
-            <div style="display: inline-flex; align-items: center; margin-right: 10px;">
-                <div style="background-color: {ownership_colors["spoločenstvenné"]}; width: 20px; height: 20px; margin-right: 5px; opacity: 0.5;"></div>
-                <span>Spoločenstvenné</span>
-            </div>
-            <div style="display: inline-flex; align-items: center; margin-right: 10px;">
-                <div style="background-color: {ownership_colors["cirkevné"]}; width: 20px; height: 20px; margin-right: 5px; opacity: 0.5;"></div>
+                <div style="background-color: {ownership_colors["cirkevné"]}; width: 20px; height: 20px; margin-right: 5px; opacity: {color_transp};"></div>
                 <span>Cirkevné</span>
             </div>
             <div style="display: inline-flex; align-items: center; margin-right: 10px;">
-                <div style="background-color: {ownership_colors["nezistené"]}; width: 20px; height: 20px; margin-right: 5px; opacity: 0.5;"></div>
+                <div style="background-color: {ownership_colors["nezistené"]}; width: 20px; height: 20px; margin-right: 5px; opacity: {color_transp};"></div>
                 <span>Nezistené</span>
             </div>
         </div>
@@ -221,10 +224,6 @@ legend_html = f"""
 # Pridanie legendy do Streamlit ako HTML
 st.markdown(legend_html, unsafe_allow_html=True)
 
-#st.write(f"Mapa vlastníckych vzťahov na území CHKO Strážovské vrchy: {legenda}")
-
-
-
 # Deklarácia štýlovej funkcie s farbami podľa formy vlastníctva
 def style_function(feature):
     ownership_type = feature['properties'].get("Forma vlastníctva", "nezistené")
@@ -233,22 +232,24 @@ def style_function(feature):
             'fillColor': color,
             'color': 'black',
             'weight': 0.1,  # Nastavenie hrúbky obrysu
-            'fillOpacity': 0.5,  # Priehľadnosť výplne
+            'fillOpacity': 0.6,  # Priehľadnosť výplne
             'opacity': 0.6  # Priehľadnosť obrysu
         }
-    # Vytvorenie interaktívnej mapy
+
+# Vytvorenie interaktívnej mapy
 m = folium.Map(location=[49.04519085530501, 18.45598270193193], zoom_start=11)
     
 # Pridanie GeoDataFrame vrstvy na mapu so zvoleným štýlom
 folium.GeoJson(gdf, style_function=style_function, name = "Forma vlastnictva").add_to(m)
     
 # Pridanie rôznych basemáp
-folium.TileLayer("Esri.WorldShadedRelief", name="Esri Shaded Relief").add_to(m)
 folium.TileLayer("OpenTopoMap", name="OpenTopo Map").add_to(m)
 folium.TileLayer("Esri.WorldTopoMap", name="Esri Topo Map").add_to(m)
 
 # Pridanie prepínača na ovládanie vrstiev
 folium.LayerControl().add_to(m)
-    
+
 # Zobrazenie interaktívnej mapy v Streamlit
 st_folium(m, width=None, height=780)  # Nastavenie šírky a výšky mapy
+
+#m.save('map_with_zoom_to_layer.html')
