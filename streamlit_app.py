@@ -238,20 +238,26 @@ def style_function(feature):
             'opacity': 0.6  # Priehľadnosť obrysu
         }
 
-# Vytvorenie interaktívnej mapy
-m = folium.Map(location=[49.04519085530501, 18.45598270193193], zoom_start=11, scrollWheelZoom=False)
+# Funkcia na vytvorenie mapy, ktorá bude uložená v cache
+@st.cache_data
+def create_map():
+    # Vytvorenie interaktívnej mapy
+    m = folium.Map(location=[49.04519085530501, 18.45598270193193], zoom_start=11, scrollWheelZoom=False)
 
-# Pridanie GeoDataFrame vrstvy na mapu so zvoleným štýlom
-folium.GeoJson(gdf, style_function=style_function, name = "Forma vlastnictva").add_to(m)
+    # Pridanie GeoDataFrame vrstvy na mapu so zvoleným štýlom
+    folium.GeoJson(gdf, style_function=style_function, name="Forma vlastnictva").add_to(m)
     
-# Pridanie rôznych basemáp
-folium.TileLayer("OpenTopoMap", name="OpenTopo Map").add_to(m)
-folium.TileLayer("Esri.WorldTopoMap", name="Esri Topo Map").add_to(m)
+    # Pridanie rôznych basemáp
+    folium.TileLayer("OpenTopoMap", name="OpenTopo Map").add_to(m)
+    folium.TileLayer("Esri.WorldTopoMap", name="Esri Topo Map").add_to(m)
 
-# Pridanie prepínača na ovládanie vrstiev
-folium.LayerControl().add_to(m)
+    # Pridanie prepínača na ovládanie vrstiev
+    folium.LayerControl().add_to(m)
 
-# Zobrazenie interaktívnej mapy v Streamlit
+    return m
+
+# Zavolanie mapy z cache a jej zobrazenie v Streamlit
+m = create_map()
 st_folium(m, width=None, height=780)  # Nastavenie šírky a výšky mapy
 
 #m.save('map_with_zoom_to_layer.html')
