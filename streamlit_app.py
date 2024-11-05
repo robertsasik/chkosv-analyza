@@ -79,7 +79,7 @@ ownership_colors = {
 
 ######################### dashboard - druhý riadok a dva stĺpce #########################
 
-row2_col1, row2_col2, = st.columns([6, 3])  # Pomery stĺpcov, 5:2(ľavý:pravy)
+row2_col1, row2_col2, = st.columns([6, 3])  # Pomery stĺpcov
 with row2_col1:
     
     st.write("###### Tabuľka - výmery pozemkov v ha podľa formy vlastníctva a druhu pozemkov")
