@@ -7,6 +7,7 @@ from streamlit_folium import st_folium
 from PIL import Image
 import plotly.graph_objects as go
 
+
 # Nastavenie layoutu na celú šírku stránky
 st.set_page_config(layout="wide")
 
@@ -238,8 +239,8 @@ def style_function(feature):
         }
 
 # Vytvorenie interaktívnej mapy
-m = folium.Map(location=[49.04519085530501, 18.45598270193193], zoom_start=11)
-    
+m = folium.Map(location=[49.04519085530501, 18.45598270193193], zoom_start=11, scrollWheelZoom=False)
+
 # Pridanie GeoDataFrame vrstvy na mapu so zvoleným štýlom
 folium.GeoJson(gdf, style_function=style_function, name = "Forma vlastnictva").add_to(m)
     
