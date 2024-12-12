@@ -17,7 +17,7 @@ row1_col1, row1_col2 = st.columns([1, 7])
 
 with row1_col1:
     image = Image.open("data/strazovske_vrchy.png")
-    st.image(image, use_column_width=False) 
+    st.image(image, use_container_width=False) 
     
 with row1_col2:
     st.write("### Chránená krajinná oblasť Strážovské vrchy")
