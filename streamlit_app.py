@@ -187,7 +187,7 @@ with row2_col2:
         st.plotly_chart(fig, use_container_width=True)
 
 
-########################### koniec - druhý riadok a dva stĺpce ##########################  {ownership_colors["miest, obcí, samosprávneho kraja"]}
+########################### koniec - druhý riadok a dva stĺpce ##########################  
 color_transp = 1 #Hodnoty 0-1
 legend_html = f"""
     <div style="background: transparent; padding: 0px; font-size: 14px;">
